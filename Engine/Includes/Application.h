@@ -3,6 +3,9 @@
 #include <string>
 #include <functional>
 #include <vector>
+#include <stack>
+#include <memory>
+#include "fvector.h"
 
 class ILayer;
 class Object;
@@ -22,13 +25,13 @@ public:
 	void AddLayer(ILayer* layer);
 	void RemoveLayer(ILayer* layer);
 	std::vector<ILayer*> GetLayers(LayerCriterion criterion);
-	std::vector<ILayer*> GetAllLayers() { return m_Layers; };
+	std::vector<std::shared_ptr<ILayer>> GetAllLayers() { m_Layers.processRemovals(); return m_Layers.data; };
 
 	Object* CreateObject(const std::string& name);
 	void RemoveObject(Object* object);
 	std::vector<Object*> GetObjects(ObjectCriterion criterion);
-	std::vector<Object*> GetAllObjects() { return m_Objects; };
+	std::vector<std::shared_ptr<Object>> GetAllObjects() { m_Objects.processRemovals(); return m_Objects.data; };
 private:
-	std::vector<ILayer*> m_Layers;
-	std::vector<Object*> m_Objects;
+	fvector<std::shared_ptr<ILayer>> m_Layers;
+	fvector<std::shared_ptr<Object>> m_Objects;
 };

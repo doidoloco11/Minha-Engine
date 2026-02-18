@@ -129,6 +129,7 @@
     <ClInclude Include="Includes\AssetsHelper\Asset.h" />
     <ClInclude Include="Includes\AssetsHelper\AssetLoader.h" />
     <ClInclude Include="Includes\AssetsHelper\AssetRegister.h" />
+    <ClInclude Include="Includes\fvector.h" />
     <ClInclude Include="Includes\IComponent.h" />
     <ClInclude Include="Includes\ILayer.h" />
     <ClInclude Include="Includes\Object.h" />
