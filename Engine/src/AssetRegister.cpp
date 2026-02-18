@@ -10,8 +10,6 @@ void AssetRegister::LoadAllAssets(const std::string& assetsDirectory) {
 		if (entry.is_regular_file()) {
 			auto p = entry.path();
 
-			printf("%s\n", p.string().c_str());
-
 			std::string ext = p.extension().string();
 
 			auto loader = loaders.find(ext.size() > 1 ? ext.substr(1) : ext);

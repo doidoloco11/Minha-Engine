@@ -1,6 +1,9 @@
 #pragma once
 
 #include <algorithm>
+#include <string>
+#include <vector>
+#include <tuple>
 
 class Application;
 class BaseComponent;
@@ -10,7 +13,7 @@ using ComponentMethod = std::tuple<BaseComponent*, BaseComponentMethod>;
 
 class ILayer {
 public:
-	virtual std::string& name() const = 0;
+	const virtual std::string& name() const = 0;
 	virtual ~ILayer() = default;
 	virtual void Exec(Application* app) {
 		for (ComponentMethod method : componentMethods)
