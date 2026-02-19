@@ -17,7 +17,7 @@ void AssetRegister::LoadAllAssets(const std::string& assetsDirectory) {
 				printf("No loader for %s\n", ext.c_str());
 				continue;
 			}
-			Asset* asset = loader->second->Load(this, p.string());
+			Asset* asset = loader->second->Load(this, p);
 			if (asset) assets[asset->name] = asset;
 		}
 	}

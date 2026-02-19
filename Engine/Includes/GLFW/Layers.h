@@ -1,11 +1,10 @@
 #pragma once
 
-
-#ifdef GLFW_VERSION_MAJOR
-#include "GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include "../AssetsHelper/AssetRegister.h"
 #include "../ILayer.h"
 #include "../Application.h"
-
 
 class StartLayer : public ILayer {
 public:
@@ -24,9 +23,7 @@ public:
 		GLFWwindow* window = glfwCreateWindow(width, height, windowName, nullptr, nullptr);
 
 		glfwMakeContextCurrent(window);
-		#ifdef __glad_h_
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		#endif
 
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
@@ -94,9 +91,9 @@ public:
 		ILayer::Exec(app);
 	};
 };
-class SwapBuffersLayer : public ILayer {
+class SwapBufferLayer : public ILayer {
 public:
-	const std::string& name() const override { return "SwapBuffers"; };
+	const std::string& name() const override { return "SwapBuffer"; };
 	void Exec(Application* app) override {
 		glfwSwapBuffers(glfwGetCurrentContext());
 		ILayer::Exec(app);
@@ -109,8 +106,8 @@ public:
 		if (glfwWindowShouldClose(glfwGetCurrentContext())) {
 			ILayer::Exec(app);
 			app->Running = false;
+			AssetRegister::getInstance().Unload();
 			glfwTerminate();
 		}
 	};
-}
-#endif
+};
