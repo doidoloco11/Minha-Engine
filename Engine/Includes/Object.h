@@ -13,7 +13,7 @@ public:
 	template<class T>
 	T* AddComponent() {
 		static_assert(std::is_base_of<IComponent<T>, T>::value, "T must be derived from IComponent");
-		T* component = new T();
+		T* component = new T(this);
 		component->ConnectMethods(m_App);
 		m_Components.push_back(component);
 		return component;
