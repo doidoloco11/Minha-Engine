@@ -8,7 +8,8 @@ Application::~Application() {}
 
 void Application::Run() {
 	while (Running) {
-		for (std::shared_ptr<ILayer>& layer : m_Layers.data) {
+		for (size_t i = 0; i < m_Layers.size(); i++) {
+			std::shared_ptr<ILayer>& layer = m_Layers[i];
 			layer->Exec(this);
 		}
 		m_Layers.processRemovals();

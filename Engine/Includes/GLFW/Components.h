@@ -25,7 +25,6 @@ public:
 		SetUniforms(shader);
 	}
 };
-
 class MeshRenderer : public IComponent<MeshRenderer> {
 public:
 	std::vector<vec3> vertices;
@@ -52,11 +51,11 @@ public:
 	};
 	void ConnectMethods(Application* app) override{
 		IComponent<MeshRenderer>::ConnectMethods(app);
-		app->GetLayers([](ILayer* layer) -> bool {return layer->name() == std::string("Render"); })[0]->AddMethod(this, static_cast<BaseComponentMethod>(&MeshRenderer::Render));
+		app->AddLayerMethod("Render", 0, this, static_cast<BaseComponentMethod>(&MeshRenderer::Render));
 	}
 	void OnTerminate(Application* app) override {
 		IComponent<MeshRenderer>::OnTerminate(app);
-		app->GetLayers([](ILayer* layer) -> bool {return layer->name() == std::string("Render"); })[0]->RemoveMethod(this, static_cast<BaseComponentMethod>(&MeshRenderer::Render));
+		app->RemoveLayerMethod("Render", 0, this, static_cast<BaseComponentMethod>(&MeshRenderer::Render));
 	}
 	void UpdateData() {
 		std::vector<float> data;
@@ -131,4 +130,62 @@ public:
 private:
 	GLuint VAO;
 	GLuint VEBO[2];
+};
+class Camera : public IComponent<Camera> {
+	Transform* transform;
+	GLuint UBO;
+public:
+	float fov = pi<float>() / 3.0f;
+	float nearPlane = 0.1f;
+	float farPlane = 1000.0f;
+	Camera(Object* obj) : IComponent<Camera>(obj) {
+		transform = obj->GetComponents<Transform>()[0];
+		glGenBuffers(1, &UBO);
+		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+		glBufferData(GL_UNIFORM_BUFFER, sizeof(float) * 40, nullptr, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	};
+	~Camera() override {
+		glDeleteBuffers(1, &UBO);
+	};
+
+	void UpdateCamera(Application* app){
+		GLFWwindow* window = glfwGetCurrentContext();
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+
+		mat4 m_projection = perspective(fov, (float)width / (float)height, nearPlane, farPlane);
+		mat4 m_view = lookAt(transform->position, transform->position + transform->GetForward(), transform->GetUp());
+
+		//0 - 15: projection matrix
+		//16 - 31: view matrix
+		//32 - 34: camera position
+		//35: fov
+		//36 - 37: near and far planes
+		//38 - 39: width and height
+		GLfloat data[40];
+		memcpy(data, value_ptr(m_projection), sizeof(float) * 16);
+		memcpy(&data[16], value_ptr(m_view), sizeof(float) * 16);
+		memcpy(&data[32], value_ptr(transform->position), sizeof(float) * 3);
+		data[35] = fov;
+		data[36] = nearPlane;
+		data[37] = farPlane;
+		memcpy(&data[38], &width, sizeof(int));
+		memcpy(&data[39], &height, sizeof(int));
+
+		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float) * 40, data);
+		glBindBufferBase(GL_UNIFORM_BUFFER, 0, UBO);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+	}
+
+	void ConnectMethods(Application* app) override {
+		IComponent<Camera>::ConnectMethods(app);
+		app->AddLayerMethod("ClearScreen", 0, this, static_cast<BaseComponentMethod>(&Camera::UpdateCamera));
+	}
+
+	void OnTerminate(Application* app) override {
+		IComponent<Camera>::OnTerminate(app);
+		app->RemoveLayerMethod("ClearScreen", 0, this, static_cast<BaseComponentMethod>(&Camera::UpdateCamera));
+	}
 };

@@ -18,8 +18,9 @@ public:
 	virtual const std::string& name() const = 0;
 	virtual ~ILayer() = default;
 	virtual void Exec(Application* app) {
-		for (ComponentMethod& method : componentMethods.data)
+		for (size_t i = 0; i < componentMethods.size(); i++)
 		{
+			ComponentMethod& method = componentMethods.data[i];
 			(std::get<0>(method)->*std::get<1>(method))(app);
 		}
 		componentMethods.processRemovals();

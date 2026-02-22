@@ -9,6 +9,8 @@
 
 class ILayer;
 class Object;
+class BaseComponent;
+class Application;
 
 using ObjectCriterion = std::function<bool(Object*)>;
 using LayerCriterion = std::function<bool(ILayer*)>;
@@ -26,6 +28,18 @@ public:
 	void RemoveLayer(ILayer* layer);
 	std::vector<ILayer*> GetLayers(LayerCriterion criterion);
 	std::vector<std::shared_ptr<ILayer>> GetAllLayers() { m_Layers.processRemovals(); return m_Layers.data; };
+	bool AddLayerMethod(std::string name, unsigned int idx, BaseComponent* component, void(BaseComponent::* method)(Application*)) {
+		std::vector<ILayer*> layers = GetLayers([name](ILayer* layer) -> bool {return layer->name() == name; });
+		if (idx >= layers.size()) return false;
+		layers[idx]->AddMethod(component, method);
+		return true;
+	};
+	bool RemoveLayerMethod(std::string name, unsigned int idx, BaseComponent* component, void(BaseComponent::* method)(Application*)) {
+		std::vector<ILayer*> layers = GetLayers([name](ILayer* layer) -> bool {return layer->name() == name; });
+		if (idx >= layers.size()) return false;
+		layers[idx]->RemoveMethod(component, method);
+		return true;
+	};
 
 	Object* CreateObject(const std::string& name);
 	void RemoveObject(Object* object);
