@@ -25,6 +25,7 @@ public:
 		SetUniforms(shader);
 	}
 };
+
 class MeshRenderer : public IComponent<MeshRenderer> {
 public:
 	std::vector<vec3> vertices;
@@ -126,8 +127,7 @@ public:
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
-	};
-
+	}
 private:
 	GLuint VAO;
 	GLuint VEBO[2];
