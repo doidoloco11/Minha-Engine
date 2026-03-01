@@ -51,11 +51,11 @@ public:
 	};
 	void ConnectMethods(Application* app) override{
 		IComponent<MeshRenderer>::ConnectMethods(app);
-		app->AddLayerMethod("Render", 0, this, static_cast<BaseComponentMethod>(&MeshRenderer::Render));
+		app->GetLayers([](ILayer* layer) -> bool {return layer->name() == std::string("Render"); })[0]->AddMethod(this, static_cast<BaseComponentMethod>(&MeshRenderer::Render));
 	}
 	void OnTerminate(Application* app) override {
 		IComponent<MeshRenderer>::OnTerminate(app);
-		app->RemoveLayerMethod("Render", 0, this, static_cast<BaseComponentMethod>(&MeshRenderer::Render));
+		app->GetLayers([](ILayer* layer) -> bool {return layer->name() == std::string("Render"); })[0]->RemoveMethod(this, static_cast<BaseComponentMethod>(&MeshRenderer::Render));
 	}
 	void UpdateData() {
 		std::vector<float> data;
@@ -181,11 +181,11 @@ public:
 
 	void ConnectMethods(Application* app) override {
 		IComponent<Camera>::ConnectMethods(app);
-		app->AddLayerMethod("ClearScreen", 0, this, static_cast<BaseComponentMethod>(&Camera::UpdateCamera));
+		app->GetLayers([](ILayer* layer) -> bool {return layer->name() == std::string("ClearScreen"); })[0]->AddMethod(this, static_cast<BaseComponentMethod>(&Camera::UpdateCamera));
 	}
 
 	void OnTerminate(Application* app) override {
 		IComponent<Camera>::OnTerminate(app);
-		app->RemoveLayerMethod("ClearScreen", 0, this, static_cast<BaseComponentMethod>(&Camera::UpdateCamera));
+		app->GetLayers([](ILayer* layer) -> bool {return layer->name() == std::string("ClearScreen"); })[0]->RemoveMethod(this, static_cast<BaseComponentMethod>(&Camera::UpdateCamera));
 	}
 };

@@ -17,10 +17,10 @@ public:
 	}
 	virtual ~IComponent() = default;
 	virtual void ConnectMethods(Application* app) {
-		app->AddLayerMethod("Terminate", 0, this, static_cast<BaseComponentMethod>(&IComponent::OnTerminate)));
+		app->AddLayerMethod("Terminate", 0, this, static_cast<BaseComponentMethod>(&IComponent::OnTerminate));
 	};
 
 	virtual void OnTerminate(Application* app) {
-		app->RemoveLayerMethod("Terminate", 0, this, static_cast<BaseComponentMethod>(&IComponent::OnTerminate)));
+		app->RemoveLayerMethod("Terminate", 0, this, static_cast<BaseComponentMethod>(&IComponent::OnTerminate));
 	};
 };
