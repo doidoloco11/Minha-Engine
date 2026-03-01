@@ -29,11 +29,25 @@ std::vector<ILayer*> Application::GetLayers(LayerCriterion criterion) {
 	std::vector<ILayer*> layers;
 	m_Layers.processRemovals();
 	for (std::shared_ptr<ILayer>& layer : m_Layers.data) {
-		if (criterion(layer.get())) {
+		if (criterion(layer.get())) { // Corrigido: chamada explícita do operador()
 			layers.push_back(layer.get());
 		}
 	}
 	return layers;
+}
+
+bool Application::AddLayerMethod(std::string name, unsigned int idx, BaseComponent* component, void(BaseComponent::* method)(Application*)) {
+	std::vector<ILayer*> layers = GetLayers([name](ILayer* layer) -> bool { return layer->name() == name; });
+	if (idx >= layers.size()) return false;
+	layers[idx]->AddMethod(component, method);
+	return true;
+}
+
+bool Application::RemoveLayerMethod(std::string name, unsigned int idx, BaseComponent* component, void(BaseComponent::* method)(Application*)) {
+	std::vector<ILayer*> layers = GetLayers([name](ILayer* layer) -> bool { return layer->name() == name; });
+	if (idx >= layers.size()) return false;
+	layers[idx]->RemoveMethod(component, method);
+	return true;
 }
 
 Object* Application::CreateObject(const std::string& name) {

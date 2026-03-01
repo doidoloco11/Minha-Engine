@@ -21,12 +21,12 @@ class ShaderLoader : public AssetLoader {
 
             if (fs::exists(geomPath)) {
                 Shader* shader = new Shader(vertPath.c_str(), geomPath.c_str(), fragPath.c_str());
-                shader->name = baseName + ".glsl";
+                shader->name = baseName + ".shader";
                 return shader;
             }
             else {
                 Shader* shader = new Shader(vertPath.c_str(), fragPath.c_str());
-                shader->name = baseName + ".glsl";
+                shader->name = baseName + ".shader";
                 return shader;
             }
         }
