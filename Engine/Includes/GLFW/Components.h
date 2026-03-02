@@ -59,9 +59,24 @@ public:
 	}
 	void UpdateData() {
 		std::vector<float> data;
-		data.insert(data.end(), vertices.begin(), vertices.end());
-		data.insert(data.end(), normals.begin(), normals.end());
-		data.insert(data.end(), uvs.begin(), uvs.end());
+		data.reserve(vertices.size() * 3 + normals.size() * 3 + uvs.size() * 2);
+
+		for (const auto& v : vertices) {
+			data.push_back(v.x);
+			data.push_back(v.y);
+			data.push_back(v.z);
+		}
+
+		for (const auto& n : normals) {
+			data.push_back(n.x);
+			data.push_back(n.y);
+			data.push_back(n.z);
+		}
+
+		for (const auto& uv : uvs) {
+			data.push_back(uv.x);
+			data.push_back(uv.y);
+		}
 
 		glBindVertexArray(VAO);
 
