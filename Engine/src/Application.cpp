@@ -8,6 +8,7 @@ Application::~Application() {}
 
 void Application::Run() {
 	while (Running) {
+		if (m_Layers.size() == 0) continue;
 		for (size_t i = 0; i < m_Layers.size(); i++) {
 			std::shared_ptr<ILayer>& layer = m_Layers[i];
 			layer->Exec(this);
